@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">RSSReader</string>
+    <string name="action_settings">Settings</string>
+    <string name= "subscribe_string">Subscribe</string>
+    <string name= "show_string">Show</string>
+    <string name= "subscriptions_string">Subscriptions</string>
+
+</resources>
