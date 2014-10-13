@@ -6,5 +6,6 @@
     <string name= "subscribe_string">Subscribe</string>
     <string name= "show_string">Show</string>
     <string name= "subscriptions_string">Subscriptions</string>
+     <string name= "subscribe_hint">Enter a feedname</string>
 
 </resources>
