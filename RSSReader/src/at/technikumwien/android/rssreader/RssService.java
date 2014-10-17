@@ -1,8 +1,15 @@
-package com.example.myapp;
+/*
+ * RssService
+ *
+ * Service of the application to download an rss feed and parse the XML file
+ */
+
+package at.technikumwien.android.rssreader;
 
 import android.app.Service;
 import android.content.Intent;
 import android.os.*;
+import at.technikumwien.android.rssreader.items.RssItem;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -14,11 +21,7 @@ import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
 
-/**
- * Created by Xris on 14.10.2014.
- */
 public class RssService extends Service {
     private final Messenger messenger = new Messenger(new MessageHandler());
     private Messenger client;
@@ -32,8 +35,8 @@ public class RssService extends Service {
         return messenger.getBinder();
     }
 
-    /**
-     * Handle incoming messages from MainActivity
+    /*
+     * Innerclass message handler for incoming messages
      */
     private class MessageHandler extends Handler { // Handler of incoming messages from clients.
         @Override
@@ -51,6 +54,9 @@ public class RssService extends Service {
         }
     }
 
+    /**
+     * Innerclass threading class to download and parse rss feed
+     */
     private class RssThread extends Thread{
         String url;
         public RssThread(String parameter){
@@ -64,6 +70,7 @@ public class RssService extends Service {
 
     private void Parse(String urlParam) {
         try {
+            //try to download feed
             URL url = new URL(urlParam);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             InputStream input = connection.getInputStream();
@@ -75,18 +82,19 @@ public class RssService extends Service {
             byte[] response = output.toByteArray();
             String rssFeed = new String(response, "UTF-8");
 
+            // Initialize XML-Parser
             XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
             XmlPullParser parser = factory.newPullParser();
             parser.setInput(new StringReader(rssFeed));
             parser.nextTag();
 
-            ArrayList<String> rss = readRss(parser);
+            // Parse RSS and send data to client (showFragment)
+            ArrayList<RssItem> rss = readRss(parser);
             Message msg = Message.obtain(null, MSG_ITEMS);
             Bundle bundle = new Bundle();
-            bundle.putStringArrayList("items", rss);
+            bundle.putParcelableArrayList("items", rss);
             msg.setData(bundle);
             client.send(msg);
-            //handler.sendMessage(msg);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (XmlPullParserException e) {
@@ -96,9 +104,14 @@ public class RssService extends Service {
         }
     }
 
-
-    private ArrayList<String> readRss(XmlPullParser parser) throws XmlPullParserException, IOException{
-        ArrayList<String> items = new ArrayList<String>();
+    /*
+    * Entry point of xml parsing, returning all rss items
+    *
+    * @param XMLPullParser parser Instance of the xml parser
+    * @return ArrayList<RssItem> items All items of the rss feed
+    */
+    private ArrayList<RssItem> readRss(XmlPullParser parser) throws XmlPullParserException, IOException{
+        ArrayList<RssItem> items = new ArrayList<RssItem>();
         parser.require(XmlPullParser.START_TAG, null, "rss");
         while (parser.next() != XmlPullParser.END_TAG){
             if (parser.getEventType() != XmlPullParser.START_TAG)
@@ -114,8 +127,14 @@ public class RssService extends Service {
         return items;
     }
 
-    private ArrayList<String> readChannel(XmlPullParser parser) throws XmlPullParserException, IOException{
-        ArrayList<String> items = new ArrayList<String>();
+    /*
+    * Read the channel tag of the rss feed
+    *
+    * @param XMLPullParser parser Instance of the xml parser
+    * @return ArrayList<RssItem> items All items of the rss feed
+    */
+    private ArrayList<RssItem> readChannel(XmlPullParser parser) throws XmlPullParserException, IOException{
+        ArrayList<RssItem> items = new ArrayList<RssItem>();
         parser.require(XmlPullParser.START_TAG, null, "channel");
         while (parser.next() != XmlPullParser.END_TAG){
             if (parser.getEventType() != XmlPullParser.START_TAG)
@@ -131,8 +150,14 @@ public class RssService extends Service {
         return items;
     }
 
-    private String readItem(XmlPullParser parser) throws XmlPullParserException, IOException {
-        String result = null;
+    /*
+    * Read the current item of the rss feed
+    *
+    * @param XMLPullParser parser Instance of the xml parser
+    * @return RssItem result The current parsed rss item
+    */
+    private RssItem readItem(XmlPullParser parser) throws XmlPullParserException, IOException {
+        RssItem result = new RssItem();
         parser.require(XmlPullParser.START_TAG, null, "item");
         while (parser.next() != XmlPullParser.END_TAG) {
             if (parser.getEventType() != XmlPullParser.START_TAG) {
@@ -147,14 +172,37 @@ public class RssService extends Service {
                     parser.nextTag();
                 }
                 parser.require(XmlPullParser.END_TAG, null, "title");
-                result = title;
-            } else {
+                result.title = title;
+            } else if (name.equals("link")){
+                parser.require(XmlPullParser.START_TAG, null, "link");
+                String link = "";
+                if (parser.next() == XmlPullParser.TEXT) {
+                    link = parser.getText();
+                    parser.nextTag();
+                }
+                parser.require(XmlPullParser.END_TAG, null, "link");
+                result.url = new URL(link);
+            }else if (name.equals("pubDate")) {
+                parser.require(XmlPullParser.START_TAG, null, "pubDate");
+                String date = "";
+                if (parser.next() == XmlPullParser.TEXT) {
+                    date = parser.getText();
+                    parser.nextTag();
+                }
+                parser.require(XmlPullParser.END_TAG, null, "pubDate");
+                result.date = date;
+            }else{
                 skip(parser);
             }
         }
         return result;
     }
 
+    /*
+    * Skip all unneeded tags
+    *
+    * @param XMLPullParser parser Instance of the xml parser
+    */
     private void skip(XmlPullParser parser) throws XmlPullParserException, IOException {
         if (parser.getEventType() != XmlPullParser.START_TAG) {
             throw new IllegalStateException();
