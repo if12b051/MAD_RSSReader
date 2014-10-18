@@ -3,6 +3,8 @@
  *
  * Capsle an rss item into an parcelable object
  *
+ * @param int id Primarykey of database
+ * @param int fk_id Foreignkey to UrlItem
  * @param String title The title of the item
  * @param String date Time of the item
  * @param URL url Article url
@@ -18,6 +20,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 public class RssItem implements Parcelable {
+    public int id;
+    public int fk_id;
     public String title;
     public String date;
     public URL url;
@@ -25,6 +29,8 @@ public class RssItem implements Parcelable {
 
     // Standardconstructor
     public RssItem(){
+        this.id = 0;
+        this.fk_id = 0;
         this.title = null;
         this.date = null;
         this.url = null;
@@ -32,7 +38,9 @@ public class RssItem implements Parcelable {
     }
 
     // Overloaded constructor
-    public RssItem(String title, String date, URL url, boolean read){
+    public RssItem(int id, int fk_id, String title, String date, URL url, boolean read){
+        this.id = id;
+        this.fk_id = fk_id;
         this.title = title;
         this.date = date;
         this.url = url;
@@ -52,6 +60,8 @@ public class RssItem implements Parcelable {
 
     // Convert Parcel to Object
     public void readFromParcel(Parcel in) {
+        id = in.readInt();
+        fk_id = in.readInt();
         title = in.readString();
         date = in.readString();
         try {
@@ -65,6 +75,8 @@ public class RssItem implements Parcelable {
     @Override
     // Convert object to Parcel
     public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeInt(id);
+        parcel.writeInt(fk_id);
         parcel.writeString(title);
         parcel.writeString(date);
         parcel.writeString(url.toString());
