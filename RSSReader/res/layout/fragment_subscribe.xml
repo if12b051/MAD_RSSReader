@@ -1,23 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal" >
 
     <EditText
-        android:id="@+id/edit_subscribe"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+            android:id="@+id/edit_subscribe_name"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:ems="10"
+            android:hint = "@string/subscribe_hint_name"
+            android:inputType="text" android:layout_marginTop="15dp"/>
+
+    <EditText
+        android:id="@+id/edit_subscribe_url"
+        android:layout_below="@id/edit_subscribe_name"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
         android:layout_weight="1"
         android:ems="10" 
-        android:hint = "@string/subscribe_hint"
-        android:inputType="textEmailAddress"
-        android:imeOptions="actionDone"/>
+        android:hint = "@string/subscribe_hint_url"
+        android:inputType="textUri"
+        android:imeOptions="actionDone" android:layout_marginTop="15dp"/>
 
     <Button
         android:id="@+id/button_subscribe"
+        android:layout_below="@id/edit_subscribe_url"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/subscribe_string" />
+        android:text="@string/subscribe_string" android:layout_alignParentBottom="false"
+        android:layout_alignParentLeft="true" android:layout_alignParentTop="false"
+        android:layout_alignParentRight="true" android:layout_alignWithParentIfMissing="false"
+        android:layout_marginTop="15dp"/>
 
-</LinearLayout>
+</RelativeLayout>

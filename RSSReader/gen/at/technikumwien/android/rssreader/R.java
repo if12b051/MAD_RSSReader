@@ -1091,7 +1091,7 @@ containing a value of this type.
         public static final int action_menu_divider=0x7f050016;
         public static final int action_menu_presenter=0x7f050017;
         public static final int action_mode_close_button=0x7f050024;
-        public static final int action_settings=0x7f050044;
+        public static final int action_settings=0x7f050049;
         public static final int activity_chooser_view_content=0x7f050025;
         public static final int activity_container=0x7f05003c;
         public static final int always=0x7f05000b;
@@ -1104,11 +1104,13 @@ containing a value of this type.
         public static final int disableHome=0x7f050008;
         public static final int dropdown=0x7f05000f;
         public static final int edit_query=0x7f050030;
-        public static final int edit_subscribe=0x7f050042;
+        public static final int edit_subscribe_name=0x7f050041;
+        public static final int edit_subscribe_url=0x7f050042;
         public static final int end=0x7f050013;
         public static final int expand_activities_button=0x7f050026;
         public static final int expanded_menu=0x7f05002c;
         public static final int fragment_container=0x7f05003d;
+        public static final int fragment_show_container=0x7f05003e;
         public static final int home=0x7f050014;
         public static final int homeAsUp=0x7f050005;
         public static final int icon=0x7f05002a;
@@ -1137,17 +1139,20 @@ containing a value of this type.
         public static final int showCustom=0x7f050007;
         public static final int showHome=0x7f050004;
         public static final int showTitle=0x7f050006;
-        public static final int show_button=0x7f050040;
         public static final int split_action_bar=0x7f05001e;
         public static final int submit_area=0x7f050039;
-        public static final int subscribe_button=0x7f05003e;
-        public static final int subscriptions_button=0x7f05003f;
+        public static final int subscribe_button=0x7f05003f;
+        public static final int subscriptions_button=0x7f050040;
         public static final int tabMode=0x7f050002;
-        public static final int textView1=0x7f050041;
+        public static final int textViewDateLabel=0x7f050046;
+        public static final int textViewNameLabel=0x7f050047;
+        public static final int textViewTitleLabel=0x7f050045;
+        public static final int textViewUrlLabel=0x7f050048;
         public static final int title=0x7f05002b;
         public static final int top_action_bar=0x7f050020;
         public static final int up=0x7f050021;
         public static final int useLogo=0x7f050003;
+        public static final int webView=0x7f050044;
         public static final int withText=0x7f05000c;
     }
     public static final class integer {
@@ -1201,61 +1206,40 @@ containing a value of this type.
         public static final int abc_search_view=0x7f030016;
         public static final int abc_simple_decor=0x7f030017;
         public static final int activity_rss=0x7f030018;
-        public static final int fragment_menu=0x7f030019;
-        public static final int fragment_rss=0x7f03001a;
-        public static final int fragment_show=0x7f03001b;
-        public static final int fragment_subscribe=0x7f03001c;
-        public static final int fragment_subscriptions=0x7f03001d;
-        public static final int support_simple_spinner_dropdown_item=0x7f03001e;
+        public static final int activity_show=0x7f030019;
+        public static final int fragment_menu=0x7f03001a;
+        public static final int fragment_rss=0x7f03001b;
+        public static final int fragment_show=0x7f03001c;
+        public static final int fragment_subscribe=0x7f03001d;
+        public static final int fragment_subscriptions=0x7f03001e;
+        public static final int fragment_web_view=0x7f03001f;
+        public static final int main=0x7f030020;
+        public static final int rss_list_items=0x7f030021;
+        public static final int support_simple_spinner_dropdown_item=0x7f030022;
+        public static final int url_list_items=0x7f030023;
     }
     public static final class menu {
         public static final int rss=0x7f0c0000;
     }
     public static final class string {
-        /**  Content description for the action bar "home" affordance. [CHAR LIMIT=NONE] 
-         */
-        public static final int abc_action_bar_home_description=0x7f0a0001;
-        /**  Content description for the action bar "up" affordance. [CHAR LIMIT=NONE] 
-         */
-        public static final int abc_action_bar_up_description=0x7f0a0002;
-        /**  Content description for the action menu overflow button. [CHAR LIMIT=NONE] 
-         */
-        public static final int abc_action_menu_overflow_description=0x7f0a0003;
-        /**  Label for the "Done" button on the far left of action mode toolbars. 
-         */
-        public static final int abc_action_mode_done=0x7f0a0000;
-        /**  Title for a button to expand the list of activities in ActivityChooserView [CHAR LIMIT=25] 
-         */
-        public static final int abc_activity_chooser_view_see_all=0x7f0a000a;
-        /**  ActivityChooserView - accessibility support 
- Description of the shwoing of a popup window with activities to choose from. [CHAR LIMIT=NONE] 
-         */
-        public static final int abc_activitychooserview_choose_application=0x7f0a0009;
-        /**  SearchView accessibility description for clear button [CHAR LIMIT=NONE] 
-         */
-        public static final int abc_searchview_description_clear=0x7f0a0006;
-        /**  SearchView accessibility description for search text field [CHAR LIMIT=NONE] 
-         */
-        public static final int abc_searchview_description_query=0x7f0a0005;
-        /**  SearchView accessibility description for search button [CHAR LIMIT=NONE] 
-         */
-        public static final int abc_searchview_description_search=0x7f0a0004;
-        /**  SearchView accessibility description for submit button [CHAR LIMIT=NONE] 
-         */
-        public static final int abc_searchview_description_submit=0x7f0a0007;
-        /**  SearchView accessibility description for voice button [CHAR LIMIT=NONE] 
-         */
-        public static final int abc_searchview_description_voice=0x7f0a0008;
-        /**  Description of the choose target button in a ShareActionProvider (share UI). [CHAR LIMIT=NONE] 
-         */
-        public static final int abc_shareactionprovider_share_with=0x7f0a000c;
-        /**  Description of a share target (both in the list of such or the default share button) in a ShareActionProvider (share UI). [CHAR LIMIT=NONE] 
-         */
-        public static final int abc_shareactionprovider_share_with_application=0x7f0a000b;
+        public static final int abc_action_bar_home_description=0x7f0a0002;
+        public static final int abc_action_bar_up_description=0x7f0a0003;
+        public static final int abc_action_menu_overflow_description=0x7f0a0004;
+        public static final int abc_action_mode_done=0x7f0a0001;
+        public static final int abc_activity_chooser_view_see_all=0x7f0a000b;
+        public static final int abc_activitychooserview_choose_application=0x7f0a000a;
+        public static final int abc_searchview_description_clear=0x7f0a0007;
+        public static final int abc_searchview_description_query=0x7f0a0006;
+        public static final int abc_searchview_description_search=0x7f0a0005;
+        public static final int abc_searchview_description_submit=0x7f0a0008;
+        public static final int abc_searchview_description_voice=0x7f0a0009;
+        public static final int abc_shareactionprovider_share_with=0x7f0a000d;
+        public static final int abc_shareactionprovider_share_with_application=0x7f0a000c;
         public static final int action_settings=0x7f0a000e;
-        public static final int app_name=0x7f0a000d;
+        public static final int app_name=0x7f0a0000;
         public static final int show_string=0x7f0a0010;
-        public static final int subscribe_hint=0x7f0a0012;
+        public static final int subscribe_hint_name=0x7f0a0012;
+        public static final int subscribe_hint_url=0x7f0a0013;
         public static final int subscribe_string=0x7f0a000f;
         public static final int subscriptions_string=0x7f0a0011;
     }
@@ -2636,7 +2620,7 @@ containing a value of this type.
          */
         public static final int[] MenuView = {
             0x010100ae, 0x0101012c, 0x0101012d, 0x0101012e,
-            0x0101012f, 0x01010130, 0x01010131, 0x01010435
+            0x0101012f, 0x01010130, 0x01010131, 0x0101041a
         };
         /**
           <p>
