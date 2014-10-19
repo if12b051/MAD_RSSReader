@@ -5,11 +5,15 @@
  */
 package at.technikumwien.android.rssreader.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.database.Cursor;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.CursorAdapter;
 import android.widget.TextView;
 import at.technikumwien.android.rssreader.R;
 import at.technikumwien.android.rssreader.RssActivity;
@@ -17,29 +21,26 @@ import at.technikumwien.android.rssreader.items.RssItem;
 
 import java.util.ArrayList;
 
-public class ItemArrayAdapter extends ArrayAdapter<RssItem> {
+public class ItemArrayAdapter extends CursorAdapter {
     Context context;
-    int resourceId;
-    ArrayList<RssItem> items = null;
     ViewHolder viewHolder;
 
-    public ItemArrayAdapter(Context context, int resourceId){
-        super(context, resourceId);
+    @SuppressLint("NewApi")
+    public ItemArrayAdapter(Context context, Cursor cursor, int flags){
+        super(context, cursor, flags);
 
-        this.items = new ArrayList<RssItem>();
         this.context = context;
-        this.resourceId = resourceId;
     }
 
-    public ItemArrayAdapter(Context context, int resourceId, ArrayList<RssItem> items){
+    /*public ItemArrayAdapter(Context context, int resourceId, ArrayList<RssItem> items){
         super(context, resourceId, items);
 
         this.context = context;
         this.resourceId = resourceId;
         this.items = items;
-    }
+    }*/
 
-    public View getView(int position, View convertView, ViewGroup parent){
+    /*public View getView(int position, View convertView, ViewGroup parent){
         if (convertView == null){
             LayoutInflater inflater = ((RssActivity)context).getLayoutInflater();
             convertView = inflater.inflate(resourceId, parent, false);
@@ -56,10 +57,32 @@ public class ItemArrayAdapter extends ArrayAdapter<RssItem> {
         if (item != null){
             viewHolder.textViewTitle.setText(item.title);
             viewHolder.textViewDate.setText(item.date);
+
+            if (!item.read) {
+                viewHolder.textViewTitle.setTypeface(null, Typeface.BOLD);
+                viewHolder.textViewDate.setTypeface(null, Typeface.BOLD);
+            }
         }
 
         return convertView;
 
+    }*/
+
+    @Override
+    public View newView(Context context, Cursor cursor, ViewGroup parent) {
+        return LayoutInflater.from(context).inflate(R.layout.rss_list_items, parent, false);
+    }
+
+    @Override
+    public void bindView(View view, Context context, Cursor cursor) {
+        ViewHolder holder;
+        holder = new ViewHolder();
+        holder.textViewTitle = (TextView)view.findViewById(R.id.textViewTitleLabel);
+        holder.textViewDate = (TextView)view.findViewById(R.id.textViewDateLabel);
+        view.setTag(holder);
+
+        holder.textViewTitle.setText(cursor.getString(cursor.getColumnIndex("title")));
+        holder.textViewDate.setText(cursor.getString(cursor.getColumnIndex("date")));
     }
 
     static class ViewHolder {

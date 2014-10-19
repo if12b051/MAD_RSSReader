@@ -7,8 +7,11 @@
 package at.technikumwien.android.rssreader;
 
 import android.app.Service;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.*;
+import at.technikumwien.android.rssreader.contentprovider.RssContentProvider;
 import at.technikumwien.android.rssreader.items.RssItem;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -29,6 +32,9 @@ public class RssService extends Service {
     public static final int MSG_ITEMS = 1;
     public static final int MSG_URL = 2;
 
+    private String url = null;
+    private int id = 0;
+
     @Override
     public IBinder onBind(Intent intent) {
         handler = new MessageHandler();
@@ -44,7 +50,8 @@ public class RssService extends Service {
             switch (msg.what) {
                 case MSG_URL:
                     client = msg.replyTo;
-                    String url = msg.getData().getString("url");
+                    url = msg.getData().getString("url");
+                    id = msg.getData().getInt("id");
                     RssThread myThread = new RssThread(url);
                     myThread.start();
                     break;
@@ -195,6 +202,15 @@ public class RssService extends Service {
                 skip(parser);
             }
         }
+
+        ContentValues values = new ContentValues();
+        values.put("feedid", id);
+        values.put("title", result.title);
+        values.put("date", result.date);
+        values.put("url", result.url.toString());
+        values.put("read", 0);
+
+        getContentResolver().insert(Uri.parse(RssContentProvider.CONTENT_URI + RssContentProvider.TABLE_RSS_ITEMS), values);
         return result;
     }
 

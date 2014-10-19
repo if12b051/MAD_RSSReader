@@ -9,12 +9,15 @@ package at.technikumwien.android.rssreader;
 import android.annotation.SuppressLint;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.ContentValues;
+import android.net.Uri;
 import android.os.*;
 import android.support.v7.app.ActionBarActivity;
 
 import java.net.URL;
 import java.util.ArrayList;
 
+import at.technikumwien.android.rssreader.contentprovider.RssContentProvider;
 import at.technikumwien.android.rssreader.items.*;
 import at.technikumwien.android.rssreader.fragments.*;
 
@@ -93,8 +96,10 @@ public class RssActivity extends ActionBarActivity{
      * @param String name Feedname
      * @param URL url Feedurl
      */
-	public void addSubscriptions(String name, URL url) {
-        subscriptions.add(new UrlItem(name, url));
+	public void addSubscriptions(String name, String url) {
+
+
+        //subscriptions.add(new UrlItem(name, url));
 	}
 
 }

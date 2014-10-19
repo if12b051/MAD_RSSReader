@@ -2,6 +2,8 @@ package at.technikumwien.android.rssreader.fragments;
 
 import android.annotation.SuppressLint;
 import android.app.Fragment;
+import android.content.ContentValues;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +14,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 import at.technikumwien.android.rssreader.R;
 import at.technikumwien.android.rssreader.RssActivity;
+import at.technikumwien.android.rssreader.contentprovider.RssContentProvider;
 
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
@@ -46,7 +49,14 @@ public class SubscribeFragment extends Fragment {
                         URL url = new URL(urlString);
                         url.toURI();
                         // Save subscription in array
-                        ((RssActivity)getActivity()).addSubscriptions(nameString, url);
+                        //((RssActivity)getActivity()).addSubscriptions(nameString, url);
+                        RssContentProvider cp = new RssContentProvider();
+                        ContentValues values = new ContentValues();
+                        values.put("name", nameString);
+                        values.put("url", urlString);
+                        getActivity().getContentResolver()
+                        .insert(Uri.parse(cp.CONTENT_URI + cp.TABLE_RSS_FEEDS), values);
+
                         Toast.makeText(getActivity(), "Rss Feed gespeichert", Toast.LENGTH_SHORT).show();
                     }catch (MalformedURLException e){
                         Toast.makeText(getActivity(), "Keine Url eingegeben!", Toast.LENGTH_SHORT).show();
