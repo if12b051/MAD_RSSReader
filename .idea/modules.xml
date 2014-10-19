@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/RSSReader/RSSReader.iml" filepath="$PROJECT_DIR$/RSSReader/RSSReader.iml" />
+      <module fileurl="file://I:/Android SDK/sdk/extras/android/support/v7/appcompat/appcompat.iml" filepath="I:/Android SDK/sdk/extras/android/support/v7/appcompat/appcompat.iml" />
+    </modules>
+  </component>
+</project>
+
