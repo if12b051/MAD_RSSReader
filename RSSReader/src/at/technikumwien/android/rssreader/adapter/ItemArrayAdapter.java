@@ -8,18 +8,12 @@ package at.technikumwien.android.rssreader.adapter;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.database.Cursor;
-import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.CursorAdapter;
 import android.widget.TextView;
 import at.technikumwien.android.rssreader.R;
-import at.technikumwien.android.rssreader.RssActivity;
-import at.technikumwien.android.rssreader.items.RssItem;
-
-import java.util.ArrayList;
 
 public class ItemArrayAdapter extends CursorAdapter {
     Context context;

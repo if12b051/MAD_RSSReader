@@ -11,16 +11,10 @@ import android.database.Cursor;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewParent;
-import android.widget.ArrayAdapter;
 import android.widget.CursorAdapter;
 import android.widget.TextView;
 import at.technikumwien.android.rssreader.R;
-import at.technikumwien.android.rssreader.RssActivity;
-import at.technikumwien.android.rssreader.contentprovider.RssContentProvider;
-import at.technikumwien.android.rssreader.items.UrlItem;
 
-import java.util.ArrayList;
 
 public class UrlArrayAdapter extends CursorAdapter {
     Context context;

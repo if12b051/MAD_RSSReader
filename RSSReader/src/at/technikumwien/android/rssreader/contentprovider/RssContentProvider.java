@@ -2,17 +2,12 @@ package at.technikumwien.android.rssreader.contentprovider;
 
 import android.content.UriMatcher;
 import android.net.Uri;
-import android.app.Activity;
 import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.os.Bundle;
-
-import java.net.URI;
-import java.net.URL;
 
 public class RssContentProvider extends ContentProvider{
     private static final String DATABASE_NAME = "rssdatabase.db";
