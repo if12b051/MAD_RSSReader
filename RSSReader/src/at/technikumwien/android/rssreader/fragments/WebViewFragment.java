@@ -2,6 +2,8 @@ package at.technikumwien.android.rssreader.fragments;
 
 import android.annotation.SuppressLint;
 import android.app.Fragment;
+import android.content.ContentValues;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +11,7 @@ import android.view.ViewGroup;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import at.technikumwien.android.rssreader.R;
+import at.technikumwien.android.rssreader.contentprovider.RssContentProvider;
 
 @SuppressLint("NewApi")
 public class WebViewFragment extends Fragment {
@@ -28,5 +31,13 @@ public class WebViewFragment extends Fragment {
         WebView webView = (WebView) getView().findViewById(R.id.webView);
         webView.setWebChromeClient(new WebChromeClient());
         webView.loadUrl(bundle.getString("url"));
+
+        ContentValues values = new ContentValues();
+        values.put("read", 1);
+
+        getActivity().getContentResolver().update(
+            Uri.parse(RssContentProvider.CONTENT_URI + RssContentProvider.TABLE_RSS_ITEMS),
+            values, "id = ?", new String[] {String.valueOf(getArguments().getInt("id"))}
+        );
     }
 }

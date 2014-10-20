@@ -2,6 +2,7 @@ package at.technikumwien.android.rssreader.fragments;
 
 import android.annotation.SuppressLint;
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.ContentValues;
 import android.net.Uri;
 import android.os.Bundle;
@@ -50,12 +51,17 @@ public class SubscribeFragment extends Fragment {
                         url.toURI();
                         // Save subscription in array
                         //((RssActivity)getActivity()).addSubscriptions(nameString, url);
-                        RssContentProvider cp = new RssContentProvider();
                         ContentValues values = new ContentValues();
                         values.put("name", nameString);
                         values.put("url", urlString);
                         getActivity().getContentResolver()
-                        .insert(Uri.parse(cp.CONTENT_URI + cp.TABLE_RSS_FEEDS), values);
+                        .insert(Uri.parse(RssContentProvider.CONTENT_URI + RssContentProvider.TABLE_RSS_FEEDS), values);
+
+                        // Handle backbutton and navigate through fragment backstack
+                        FragmentManager fm = getFragmentManager();
+                        if (fm.getBackStackEntryCount() != 0){
+                            fm.popBackStack();
+                        }
 
                         Toast.makeText(getActivity(), "Rss Feed gespeichert", Toast.LENGTH_SHORT).show();
                     }catch (MalformedURLException e){

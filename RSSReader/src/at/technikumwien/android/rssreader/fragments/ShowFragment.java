@@ -7,9 +7,8 @@ import android.content.*;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.*;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.*;
+import android.widget.AbsListView;
 import android.widget.CursorAdapter;
 import android.widget.ListView;
 import at.technikumwien.android.rssreader.R;
@@ -40,11 +39,74 @@ public class ShowFragment extends ListFragment implements ServiceConnection, Loa
         getLoaderManager().initLoader(0, null, this);
 
         Context ctx = getActivity().getApplicationContext();
-        String[] projection = { "id _id", "title", "date" };
+        String[] projection = { "id _id", "title", "date", "url", "read" };
         Cursor c = ctx.getContentResolver().query(Uri.parse(RssContentProvider.CONTENT_URI + RssContentProvider.TABLE_RSS_ITEMS), projection, null, null, null);
 
         adapter = new ItemArrayAdapter(ctx, c, CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
         setListAdapter(adapter);
+
+        getListView().setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
+            @Override
+            public void onItemCheckedStateChanged(ActionMode mode, int i, long l, boolean b) {
+                int count = getListView().getCheckedItemCount();
+                switch (count){
+                    case 0:
+                        mode.setSubtitle(null);
+                        break;
+                    case 1:
+                        mode.setSubtitle("Ein Artikel ausgewählt!");
+                        break;
+                    default:
+                        mode.setSubtitle(count + " Artikel ausgewählt");
+                }
+            }
+
+            @Override
+            public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
+                MenuInflater inflater = actionMode.getMenuInflater();
+                inflater.inflate(R.menu.cab_show, menu);
+                return true;
+            }
+
+            @Override
+            public boolean onPrepareActionMode(ActionMode actionMode, Menu menu) {
+                return false;
+            }
+
+            @Override
+            public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+                switch (item.getItemId()){
+                    case R.id.action_read:
+                        SetStatus(1);
+                        break;
+                    case R.id.action_unread:
+                        SetStatus(0);
+                        break;
+                    default:
+                        return false;
+                }
+
+                return false;
+            }
+
+            private void SetStatus(int read){
+                ContentValues values = new ContentValues();
+                values.put("read", read);
+
+                long[] items = getListView().getCheckedItemIds();
+                for (int i = 0; i < items.length; i++){
+                    getActivity().getContentResolver().update(
+                            Uri.parse(RssContentProvider.CONTENT_URI + RssContentProvider.TABLE_RSS_ITEMS),
+                            values, "id = ?", new String[] {String.valueOf(items[i])}
+                    );
+                }
+            }
+
+            @Override
+            public void onDestroyActionMode(ActionMode actionMode) {
+
+            }
+        });
     }
 
     @Override
@@ -63,15 +125,16 @@ public class ShowFragment extends ListFragment implements ServiceConnection, Loa
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-        getListView().setItemChecked(position, true);
         WebViewFragment f = new WebViewFragment();
 
         // Get current item
-        RssItem item = (RssItem) getListAdapter().getItem(position);
+        Cursor c = (Cursor) getListAdapter().getItem(position);
+        c.moveToPosition(position);
 
         // New bundle with url of selected feed
         Bundle b = new Bundle();
-        b.putString("url", item.url.toString());
+        b.putInt("id", c.getInt(c.getColumnIndex("_id")));
+        b.putString("url", c.getString(c.getColumnIndex("url")));
 
         // Set as argument for new fragment
         f.setArguments(b);
@@ -107,8 +170,8 @@ public class ShowFragment extends ListFragment implements ServiceConnection, Loa
 
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        String[] projection = { "id _id", "title", "date" };
-        return new CursorLoader(getActivity(), RssContentProvider.CONTENT_URI,
+        String[] projection = { "id _id", "title", "date", "url", "read" };
+        return new CursorLoader(getActivity(), Uri.parse(RssContentProvider.CONTENT_URI + RssContentProvider.TABLE_RSS_ITEMS),
             projection, null, null, null);
     }
 

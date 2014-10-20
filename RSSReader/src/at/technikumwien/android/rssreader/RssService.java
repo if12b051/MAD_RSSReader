@@ -198,6 +198,15 @@ public class RssService extends Service {
                 }
                 parser.require(XmlPullParser.END_TAG, null, "pubDate");
                 result.date = date;
+            }else if (name.equals("guid")) {
+                parser.require(XmlPullParser.START_TAG, null, "guid");
+                String guid = "";
+                if (parser.next() == XmlPullParser.TEXT) {
+                    guid = parser.getText();
+                    parser.nextTag();
+                }
+                parser.require(XmlPullParser.END_TAG, null, "guid");
+                result.guid = guid;
             }else{
                 skip(parser);
             }
@@ -205,6 +214,7 @@ public class RssService extends Service {
 
         ContentValues values = new ContentValues();
         values.put("feedid", id);
+        values.put("guid", result.guid);
         values.put("title", result.title);
         values.put("date", result.date);
         values.put("url", result.url.toString());

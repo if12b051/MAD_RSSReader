@@ -83,6 +83,11 @@ public class ItemArrayAdapter extends CursorAdapter {
 
         holder.textViewTitle.setText(cursor.getString(cursor.getColumnIndex("title")));
         holder.textViewDate.setText(cursor.getString(cursor.getColumnIndex("date")));
+
+        if(cursor.getInt(cursor.getColumnIndex("read")) == 0){
+            holder.textViewTitle.setTypeface(null, Typeface.BOLD);
+            holder.textViewDate.setTypeface(null, Typeface.BOLD);
+        }
     }
 
     static class ViewHolder {

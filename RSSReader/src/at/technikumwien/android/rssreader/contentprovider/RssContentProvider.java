@@ -17,9 +17,9 @@ import java.net.URL;
 public class RssContentProvider extends ContentProvider{
     private static final String DATABASE_NAME = "rssdatabase.db";
     private static final String CONTENTPROVIDER_AUTHORITY =
-            "at.technikumwien.android.rssreader";
+            "at.technikumwien.android.rssreader.provider";
     public static final Uri CONTENT_URI =
-            Uri.parse("content://" + CONTENTPROVIDER_AUTHORITY + ".provider/");
+            Uri.parse("content://" + CONTENTPROVIDER_AUTHORITY + "/");
 
     // Table Names
     public static final String TABLE_RSS_FEEDS = "rss_feeds";
@@ -60,7 +60,7 @@ public class RssContentProvider extends ContentProvider{
                 cursor = db.query(TABLE_RSS_ITEMS, projections, selections, selectionsArgs, null, null, sortOrder);
                 break;
         }
-
+        cursor.setNotificationUri(getContext().getContentResolver(), uri);
         return cursor;
     }
 
@@ -84,7 +84,7 @@ public class RssContentProvider extends ContentProvider{
                 url = CONTENT_URI + TABLE_RSS_FEEDS;
                 break;
             case ITEMS:
-                id = db.insertWithOnConflict(TABLE_RSS_ITEMS, null, contentValues, SQLiteDatabase.CONFLICT_REPLACE);
+                id = db.insertWithOnConflict(TABLE_RSS_ITEMS, null, contentValues, SQLiteDatabase.CONFLICT_IGNORE);
                 url = CONTENT_URI + TABLE_RSS_ITEMS;
                 break;
         }
@@ -101,9 +101,11 @@ public class RssContentProvider extends ContentProvider{
         int table = URI_MATCHER.match(uri);
         switch(table){
             case FEEDS:
-                rowsDeleted = db.delete(CONTENT_URI + TABLE_RSS_FEEDS, selection, selectionArgs);
+                rowsDeleted = db.delete(TABLE_RSS_FEEDS, selection, selectionArgs);
+                break;
             case ITEMS:
-                rowsDeleted = db.delete(CONTENT_URI + TABLE_RSS_ITEMS, selection, selectionArgs);
+                rowsDeleted = db.delete(TABLE_RSS_ITEMS, selection, selectionArgs);
+                break;
         }
 
         getContext().getContentResolver().notifyChange(uri, null);
@@ -130,7 +132,7 @@ public class RssContentProvider extends ContentProvider{
     }
 
     private static class DatabaseHelper extends SQLiteOpenHelper {
-        private static final int DATABASE_VERSION = 2;
+        private static final int DATABASE_VERSION = 3;
 
         // Create Statement
         private static final String CREATE_TABLE_RSS_FEEDS =
@@ -143,6 +145,7 @@ public class RssContentProvider extends ContentProvider{
                 "CREATE TABLE " + TABLE_RSS_ITEMS + "("
                     + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
                     + "feedid INTEGER NOT NULL,"
+                    + "guid STRING UNIQUE,"
                     + "title STRING,"
                     + "date STRING,"
                     + "url STRING,"

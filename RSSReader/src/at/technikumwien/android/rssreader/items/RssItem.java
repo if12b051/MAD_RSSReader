@@ -22,6 +22,7 @@ import java.net.URL;
 public class RssItem implements Parcelable {
     public int id;
     public int fk_id;
+    public String guid;
     public String title;
     public String date;
     public URL url;
@@ -31,6 +32,7 @@ public class RssItem implements Parcelable {
     public RssItem(){
         this.id = 0;
         this.fk_id = 0;
+        this.guid = null;
         this.title = null;
         this.date = null;
         this.url = null;
@@ -62,6 +64,7 @@ public class RssItem implements Parcelable {
     public void readFromParcel(Parcel in) {
         id = in.readInt();
         fk_id = in.readInt();
+        guid = in.readString();
         title = in.readString();
         date = in.readString();
         try {
@@ -77,6 +80,7 @@ public class RssItem implements Parcelable {
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeInt(id);
         parcel.writeInt(fk_id);
+        parcel.writeString(guid);
         parcel.writeString(title);
         parcel.writeString(date);
         parcel.writeString(url.toString());

@@ -3,15 +3,19 @@ package at.technikumwien.android.rssreader.fragments;
 import android.annotation.SuppressLint;
 import android.app.ListFragment;
 import android.app.LoaderManager;
+import android.content.ClipData;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
+import android.graphics.AvoidXfermode;
 import android.net.Uri;
 import android.os.*;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.text.AndroidCharacter;
+import android.text.style.SuperscriptSpan;
+import android.util.SparseBooleanArray;
+import android.view.*;
+import android.widget.AbsListView;
 import android.widget.CursorAdapter;
 import android.widget.ListView;
 import at.technikumwien.android.rssreader.*;
@@ -45,11 +49,75 @@ public class SubscriptionsFragment extends ListFragment implements LoaderManager
 
         adapter = new UrlArrayAdapter(ctx, c, CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
         setListAdapter(adapter);
+
+        getListView().setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
+            @Override
+            public void onItemCheckedStateChanged(ActionMode mode, int i, long l, boolean b) {
+                int count = getListView().getCheckedItemCount();
+                switch (count){
+                    case 0:
+                        mode.setSubtitle(null);
+                        break;
+                    case 1:
+                        mode.setSubtitle("Ein Rssfeed ausgewählt!");
+                        break;
+                    default:
+                        mode.setSubtitle(count + " Rssfeeds ausgewählt");
+                }
+            }
+
+            @Override
+            public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
+                MenuInflater inflater = actionMode.getMenuInflater();
+                inflater.inflate(R.menu.cab_subscriptions, menu);
+                return true;
+            }
+
+            @Override
+            public boolean onPrepareActionMode(ActionMode actionMode, Menu menu) {
+                return false;
+            }
+
+            @Override
+            public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+                switch (item.getItemId()){
+                    case R.id.action_edit:
+                        break;
+                    case R.id.action_delete:
+                        deleteSelectedItems();
+                        break;
+                    default:
+                        return false;
+                }
+
+                return false;
+            }
+
+            @Override
+            public void onDestroyActionMode(ActionMode actionMode) {
+
+            }
+        });
+    }
+
+    private void deleteSelectedItems(){
+        long[] items = getListView().getCheckedItemIds();
+        for (int i = 0; i < items.length; i++){
+            getActivity().getContentResolver().delete(
+                    Uri.parse(RssContentProvider.CONTENT_URI + RssContentProvider.TABLE_RSS_ITEMS),
+                    "feedid = ?", new String[] {String.valueOf(items[i])}
+            );
+            getActivity().getContentResolver().delete(
+                    Uri.parse(RssContentProvider.CONTENT_URI + RssContentProvider.TABLE_RSS_FEEDS),
+                    "id = ?", new String[] {String.valueOf(items[i])}
+            );
+        }
     }
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-        getListView().setItemChecked(position, true);
+        v.setBackgroundResource(0);
+        v.setBackgroundResource(android.R.color.holo_blue_light);
         ShowFragment f = new ShowFragment();
 
         // Get current item
@@ -71,13 +139,14 @@ public class SubscriptionsFragment extends ListFragment implements LoaderManager
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
         String[] projection = { "id _id", "name", "url" };
-        return new CursorLoader(getActivity(), RssContentProvider.CONTENT_URI,
+        return new CursorLoader(getActivity(), Uri.parse(RssContentProvider.CONTENT_URI + RssContentProvider.TABLE_RSS_FEEDS),
             projection, null, null, null);
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
         adapter.swapCursor(cursor);
+        adapter.notifyDataSetChanged();
     }
 
     @Override

@@ -17,12 +17,19 @@ import android.support.v7.app.ActionBarActivity;
 import java.net.URL;
 import java.util.ArrayList;
 
+import android.text.AndroidCharacter;
+import android.view.ActionMode;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.widget.AbsListView;
+import android.widget.ListView;
 import at.technikumwien.android.rssreader.contentprovider.RssContentProvider;
 import at.technikumwien.android.rssreader.items.*;
 import at.technikumwien.android.rssreader.fragments.*;
 
 @SuppressLint("NewApi")
-public class RssActivity extends ActionBarActivity{
+public class RssActivity extends ActionBarActivity implements AbsListView.MultiChoiceModeListener{
     // Current fragment
 	private Fragment mContent;
 	public static RssActivity instance;
@@ -48,7 +55,7 @@ public class RssActivity extends ActionBarActivity{
     public void onResume() {
         super.onResume();
         //Switch to first fragment
-        switchContent(new MenuFragment());
+        switchContent(new SubscriptionsFragment());
     }
 
     @Override
@@ -102,4 +109,39 @@ public class RssActivity extends ActionBarActivity{
         //subscriptions.add(new UrlItem(name, url));
 	}
 
+    public boolean onCreateOptionsMenu(Menu menu){
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.rss, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item){
+        switchContent(new SubscribeFragment());
+        return true;
+    }
+
+    @Override
+    public void onItemCheckedStateChanged(ActionMode actionMode, int i, long l, boolean b) {
+
+    }
+
+    @Override
+    public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
+        return false;
+    }
+
+    @Override
+    public boolean onPrepareActionMode(ActionMode actionMode, Menu menu) {
+        return false;
+    }
+
+    @Override
+    public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
+        return false;
+    }
+
+    @Override
+    public void onDestroyActionMode(ActionMode actionMode) {
+
+    }
 }
