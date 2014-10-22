@@ -6,48 +6,28 @@
 
 package at.technikumwien.android.rssreader;
 
-import android.annotation.SuppressLint;
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.content.ContentValues;
-import android.net.Uri;
 import android.os.*;
 import android.support.v7.app.ActionBarActivity;
-
-import java.net.URL;
-import java.util.ArrayList;
-
-import android.text.AndroidCharacter;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.AbsListView;
-import android.widget.ListView;
-import at.technikumwien.android.rssreader.contentprovider.RssContentProvider;
-import at.technikumwien.android.rssreader.items.*;
 import at.technikumwien.android.rssreader.fragments.*;
 
-@SuppressLint("NewApi")
 public class RssActivity extends ActionBarActivity implements AbsListView.MultiChoiceModeListener{
-    // Current fragment
-	private Fragment mContent;
 	public static RssActivity instance;
-    // Saved subscriptions
-	private ArrayList<UrlItem> subscriptions;
 
 	public static RssActivity getInstance() {
 		return instance;
 	}
-	
-	@SuppressLint("NewApi")
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_rss);
-
-        // Initialize ArrayList
-		subscriptions = new ArrayList<UrlItem>();
 		instance = this;
 	}
 
@@ -75,12 +55,7 @@ public class RssActivity extends ActionBarActivity implements AbsListView.MultiC
      *
      * @param Fragment fragment The new fragment
      */
-	public void switchContent(Fragment fragment) { 
-		if(mContent != null && mContent.getClass().equals(fragment.getClass())) {
-	            return;
-	    }
-		mContent = fragment;
-		
+	public void switchContent(Fragment fragment) {
 		getFragmentManager()
 		.beginTransaction()
 		.replace(R.id.fragment_container, fragment)
@@ -89,37 +64,33 @@ public class RssActivity extends ActionBarActivity implements AbsListView.MultiC
 	}
 
     /*
-     * Get saved subscriptions
-     *
-     * @return ArrayList<UrlItem>
+     * Overwrite onCreateOptions, inflates the ActionBarMenu
      */
-	public ArrayList<UrlItem> getSubscriptions() {
-		return subscriptions;
-	}
-
-    /*
-     * Add a new UrlItem to the subscriptions list
-     *
-     * @param String name Feedname
-     * @param URL url Feedurl
-     */
-	public void addSubscriptions(String name, String url) {
-
-
-        //subscriptions.add(new UrlItem(name, url));
-	}
-
+    @Override
     public boolean onCreateOptionsMenu(Menu menu){
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.rss, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
+    /*
+     * Overwrite onOptionsItemSelected to handle ActionBar menu item
+     */
+    @Override
     public boolean onOptionsItemSelected(MenuItem item){
-        switchContent(new SubscribeFragment());
-        return true;
+        switch (item.getItemId()){
+            case R.id.action_refresh:
+                //SendMessage();
+                return false;
+            case R.id.action_add:
+                switchContent(new SubscribeFragment());
+                return false;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
+    //region Not implemented Interfacemethods
     @Override
     public void onItemCheckedStateChanged(ActionMode actionMode, int i, long l, boolean b) {
 
@@ -144,4 +115,5 @@ public class RssActivity extends ActionBarActivity implements AbsListView.MultiC
     public void onDestroyActionMode(ActionMode actionMode) {
 
     }
+    //endregion
 }

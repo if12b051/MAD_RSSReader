@@ -7,6 +7,7 @@
     <string name="action_delete">Delete</string>
     <string name="action_read">Read</string>
     <string name="action_unread">Unread</string>
+    <string name="action_refresh">Refresh</string>
     <string name= "subscribe_string">Subscribe</string>
     <string name= "show_string">Show</string>
     <string name= "subscriptions_string">Subscriptions</string>

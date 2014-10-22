@@ -5,9 +5,9 @@
  */
 package at.technikumwien.android.rssreader.adapter;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,56 +17,20 @@ import at.technikumwien.android.rssreader.R;
 
 public class ItemArrayAdapter extends CursorAdapter {
     Context context;
-    ViewHolder viewHolder;
 
-    @SuppressLint("NewApi")
     public ItemArrayAdapter(Context context, Cursor cursor, int flags){
         super(context, cursor, flags);
 
         this.context = context;
     }
 
-    /*public ItemArrayAdapter(Context context, int resourceId, ArrayList<RssItem> items){
-        super(context, resourceId, items);
-
-        this.context = context;
-        this.resourceId = resourceId;
-        this.items = items;
-    }*/
-
-    /*public View getView(int position, View convertView, ViewGroup parent){
-        if (convertView == null){
-            LayoutInflater inflater = ((RssActivity)context).getLayoutInflater();
-            convertView = inflater.inflate(resourceId, parent, false);
-
-            viewHolder = new ViewHolder();
-            viewHolder.textViewTitle = (TextView)convertView.findViewById(R.id.textViewTitleLabel);
-            viewHolder.textViewDate = (TextView)convertView.findViewById(R.id.textViewDateLabel);
-            convertView.setTag(viewHolder);
-        }else{
-            viewHolder = (ViewHolder)convertView.getTag();
-        }
-
-        RssItem item = items.get(position);
-        if (item != null){
-            viewHolder.textViewTitle.setText(item.title);
-            viewHolder.textViewDate.setText(item.date);
-
-            if (!item.read) {
-                viewHolder.textViewTitle.setTypeface(null, Typeface.BOLD);
-                viewHolder.textViewDate.setTypeface(null, Typeface.BOLD);
-            }
-        }
-
-        return convertView;
-
-    }*/
-
+    // Inflate view for article items
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
         return LayoutInflater.from(context).inflate(R.layout.rss_list_items, parent, false);
     }
 
+    // Set items text and typeface (bold = unread items)
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
         ViewHolder holder;
@@ -81,6 +45,9 @@ public class ItemArrayAdapter extends CursorAdapter {
         if(cursor.getInt(cursor.getColumnIndex("read")) == 0){
             holder.textViewTitle.setTypeface(null, Typeface.BOLD);
             holder.textViewDate.setTypeface(null, Typeface.BOLD);
+        }else{
+            holder.textViewTitle.setTypeface(null, Typeface.NORMAL);
+            holder.textViewDate.setTypeface(null, Typeface.NORMAL);
         }
     }
 

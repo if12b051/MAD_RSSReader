@@ -26,8 +26,8 @@ public class RssContentProvider extends ContentProvider{
 
     private static final UriMatcher URI_MATCHER = new UriMatcher(UriMatcher.NO_MATCH);
     static{
-        URI_MATCHER.addURI("at.technikumwien.android.rssreader.provider", TABLE_RSS_FEEDS, FEEDS);
-        URI_MATCHER.addURI("at.technikumwien.android.rssreader.provider", TABLE_RSS_ITEMS, ITEMS);
+        URI_MATCHER.addURI(CONTENTPROVIDER_AUTHORITY, TABLE_RSS_FEEDS, FEEDS);
+        URI_MATCHER.addURI(CONTENTPROVIDER_AUTHORITY, TABLE_RSS_ITEMS, ITEMS);
     }
 
     protected DatabaseHelper databaseHelper;

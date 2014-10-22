@@ -16,8 +16,6 @@ import at.technikumwien.android.rssreader.RssActivity;
 import at.technikumwien.android.rssreader.RssService;
 import at.technikumwien.android.rssreader.adapter.ItemArrayAdapter;
 import at.technikumwien.android.rssreader.contentprovider.RssContentProvider;
-import at.technikumwien.android.rssreader.items.RssItem;
-import at.technikumwien.android.rssreader.items.UrlItem;
 
 import java.util.ArrayList;
 
@@ -51,12 +49,15 @@ public class ShowFragment extends ListFragment implements ServiceConnection, Loa
                 int count = getListView().getCheckedItemCount();
                 switch (count){
                     case 0:
+                        mode.setTitle(null);
                         mode.setSubtitle(null);
                         break;
                     case 1:
+                        mode.setTitle("Auswahl");
                         mode.setSubtitle("Ein Artikel ausgewählt!");
                         break;
                     default:
+                        mode.setTitle("Auswahl");
                         mode.setSubtitle(count + " Artikel ausgewählt");
                 }
             }
@@ -112,8 +113,27 @@ public class ShowFragment extends ListFragment implements ServiceConnection, Loa
     @Override
     public void onResume(){
         super.onResume();
+        setHasOptionsMenu(true);
         // bind service connection
         getActivity().bindService(new Intent(getActivity(), RssService.class), connection, Context.BIND_AUTO_CREATE);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){
+        menu.clear();
+        inflater.inflate(R.menu.rss_show, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+        switch (item.getItemId()){
+            case R.id.action_refresh:
+                SendMessage();
+                return false;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -168,11 +188,12 @@ public class ShowFragment extends ListFragment implements ServiceConnection, Loa
         }
     }
 
+    // Load Cursers to retrieve feed article with id, title, date, url and readstatus
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
         String[] projection = { "id _id", "title", "date", "url", "read" };
         return new CursorLoader(getActivity(), Uri.parse(RssContentProvider.CONTENT_URI + RssContentProvider.TABLE_RSS_ITEMS),
-            projection, null, null, null);
+            projection, "feedid = ?", new String[] {String.valueOf(getArguments().getInt("id"))}, null);
     }
 
     @Override
@@ -191,16 +212,7 @@ public class ShowFragment extends ListFragment implements ServiceConnection, Loa
     private class MessageHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case RssService.MSG_ITEMS:
-                    // Update ListView with data from service
-                    //ArrayList<RssItem> items = msg.getData().getParcelableArrayList("items");
-                    //ItemArrayAdapter adapter = new ItemArrayAdapter(getActivity(), R.layout.rss_list_items, items);
-                    //setListAdapter(adapter);
-                    break;
-                default:
-                    super.handleMessage(msg);
-            }
+            super.handleMessage(msg);
         }
     }
 

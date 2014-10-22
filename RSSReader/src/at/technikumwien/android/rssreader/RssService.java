@@ -171,7 +171,8 @@ public class RssService extends Service {
                 continue;
             }
             String name = parser.getName();
-            if (name.equals("title")) {
+
+            if (name.equals("title")) { // Get article title
                 parser.require(XmlPullParser.START_TAG, null, "title");
                 String title = "";
                 if (parser.next() == XmlPullParser.TEXT) {
@@ -180,7 +181,7 @@ public class RssService extends Service {
                 }
                 parser.require(XmlPullParser.END_TAG, null, "title");
                 result.title = title;
-            } else if (name.equals("link")){
+            } else if (name.equals("link")){ // Get article link
                 parser.require(XmlPullParser.START_TAG, null, "link");
                 String link = "";
                 if (parser.next() == XmlPullParser.TEXT) {
@@ -189,7 +190,7 @@ public class RssService extends Service {
                 }
                 parser.require(XmlPullParser.END_TAG, null, "link");
                 result.url = new URL(link);
-            }else if (name.equals("pubDate")) {
+            }else if (name.equals("pubDate")) { // Get the published date as string
                 parser.require(XmlPullParser.START_TAG, null, "pubDate");
                 String date = "";
                 if (parser.next() == XmlPullParser.TEXT) {
@@ -198,7 +199,7 @@ public class RssService extends Service {
                 }
                 parser.require(XmlPullParser.END_TAG, null, "pubDate");
                 result.date = date;
-            }else if (name.equals("guid")) {
+            }else if (name.equals("guid")) { // Get unique id of rss item
                 parser.require(XmlPullParser.START_TAG, null, "guid");
                 String guid = "";
                 if (parser.next() == XmlPullParser.TEXT) {
@@ -207,11 +208,12 @@ public class RssService extends Service {
                 }
                 parser.require(XmlPullParser.END_TAG, null, "guid");
                 result.guid = guid;
-            }else{
+            }else{ // Skip other tags
                 skip(parser);
             }
         }
 
+        // Save values
         ContentValues values = new ContentValues();
         values.put("feedid", id);
         values.put("guid", result.guid);
@@ -220,6 +222,7 @@ public class RssService extends Service {
         values.put("url", result.url.toString());
         values.put("read", 0);
 
+        // Put values into database
         getContentResolver().insert(Uri.parse(RssContentProvider.CONTENT_URI + RssContentProvider.TABLE_RSS_ITEMS), values);
         return result;
     }
